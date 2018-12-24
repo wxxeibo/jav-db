@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
-import { Input, Button, Table } from 'antd';
+import { Input, Button, Table, Icon, message } from 'antd';
 import Promise from 'bluebird';
 import Nedb from 'nedb';
 // import 'antd/dist/antd.css';
 import electron from 'electron';
-import debugModule from 'debug';
-
-const debug = debugModule('jav-db:src/app.jsx');
 
 const app = electron.remote.app;
 const userData = app.getAppPath('userData');
@@ -31,6 +28,7 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      code: '',
       name: '',
       dataSource: [],
     };
@@ -42,27 +40,41 @@ export default class App extends Component {
         this.setState({ dataSource: res });
       });
   }
-  handleUpdate(name) {
-    this.setState({ name });
+  handleUpdate(key, value) {
+    this.setState({ [key]: value });
   }
   handleSave() {
-    const { name } = this.state;
-    db.insertAsync({ name })
+    const { code, name } = this.state;
+    db.insertAsync({ code, name })
       .then(() => db.find().execAsync())
       .then((res) => {
+        message.success('Success saving data.');
         this.setState({ dataSource: res });
       });
   }
   render() {
-    debug('render()', this.props, this.state);
     return (
       <div>
-        <h2>Welcome to React!</h2>
-        <Input
-          value={this.state.name}
-          onChange={event => this.handleUpdate(event.target.value)}
-          onPressEnter={() => this.handleSave()}
-        />
+        <h2>JAV DB</h2>
+        {[
+          {
+            placeholder: 'JAV Code, e.g. "KAWD-941"; "Movie Number" in www.dmm.co.jp',
+            key: 'code',
+          },
+          {
+            placeholder: 'JAV Name, e.g. "Temptation Pantyhose Slut OL Satomi Yuria"',
+            key: 'name',
+          },
+        ].map(item => (
+          <Input
+            key={item.key}
+            prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+            placeholder={item.placeholder}
+            value={this.state[item.key]}
+            onChange={event => this.handleUpdate(item.key, event.target.value)}
+            onPressEnter={() => this.handleSave()}
+          />
+        ))}
         <Button onClick={() => this.handleSave()}>Save</Button>
         <Table rowKey="_id" dataSource={this.state.dataSource} columns={columns} />
       </div>

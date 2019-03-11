@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, message } from 'antd';
+import { Table, message, Popconfirm, Button } from 'antd';
 import Promise from 'bluebird';
 import Nedb from 'nedb';
 // import 'antd/dist/antd.css';
@@ -18,13 +18,20 @@ const Cursor = db.find().constructor;
 Promise.promisifyAll(Nedb.prototype);
 Promise.promisifyAll(Cursor.prototype);
 
-const columns = [
-  {
-    title: 'Name',
-    dataIndex: 'name',
-    key: 'name',
-  },
-];
+function remove(id) {
+  db.remove({ _id: id }, {}, (error, numRemoved) => {
+    if (error) {
+      message.error('Failed to remove!');
+      return;
+    }
+    // db.persistence.compactDatafile();
+    if (numRemoved === 0) {
+      message.warn('Nothing to be removed!');
+      return;
+    }
+    message.success(`Success to remove, removed count: ${numRemoved}`);
+  });
+}
 
 export default class App extends Component {
   constructor(props) {
@@ -34,6 +41,34 @@ export default class App extends Component {
       name: '',
       dataSource: [],
     };
+    this.columns = [
+      {
+        title: 'ID',
+        dataIndex: '_id',
+        key: '_id',
+      },
+      {
+        title: 'Name',
+        dataIndex: 'name',
+        key: 'name',
+      },
+      {
+        title: 'Actions',
+        dataIndex: '_id',
+        key: 'actions',
+        render: id => (
+          <Popconfirm
+            title="Are you sure delete this task?"
+            onConfirm={() => remove(id)}
+            onCancel={() => {}}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button>Delete</Button>
+          </Popconfirm>
+        ),
+      },
+    ];
     this.handleSubmit = this.handleSubmit.bind(this);
   }
   componentDidMount() {
@@ -58,7 +93,7 @@ export default class App extends Component {
         this.setState({ dataSource: res });
       })
       .catch((error) => {
-        console.error(`Failed in save data, error: ${error.message}`);
+        message.error(`Failed in save data, error: ${error.message}`);
       });
   }
   render() {
@@ -66,7 +101,7 @@ export default class App extends Component {
       <div>
         <h2>JAV DB</h2>
         <CreateForm onSubmit={this.handleSubmit} />
-        <Table rowKey="_id" dataSource={this.state.dataSource} columns={columns} />
+        <Table rowKey="_id" dataSource={this.state.dataSource} columns={this.columns} />
       </div>
     );
   }

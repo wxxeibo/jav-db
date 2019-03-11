@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { Input, Button, Table, Icon, message } from 'antd';
+import { Table, message } from 'antd';
 import Promise from 'bluebird';
 import Nedb from 'nedb';
 // import 'antd/dist/antd.css';
 import electron from 'electron';
+
+import CreateForm from './CreateForm';
 
 const app = electron.remote.app;
 const userData = app.getAppPath('userData');
@@ -32,50 +34,38 @@ export default class App extends Component {
       name: '',
       dataSource: [],
     };
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
   componentDidMount() {
     db.find()
       .execAsync()
       .then((res) => {
+        // res = [{
+        //   'foo';
+        //   'B8QKsq3euaZg5mEn';
+        // }]
         this.setState({ dataSource: res });
       });
   }
-  handleUpdate(key, value) {
-    this.setState({ [key]: value });
+  handleSubmit(values) {
+    this.save(values.javCode, values.javName);
   }
-  handleSave() {
-    const { code, name } = this.state;
+  save(code, name) {
     db.insertAsync({ code, name })
       .then(() => db.find().execAsync())
       .then((res) => {
         message.success('Success saving data.');
         this.setState({ dataSource: res });
+      })
+      .catch((error) => {
+        console.error(`Failed in save data, error: ${error.message}`);
       });
   }
   render() {
     return (
       <div>
         <h2>JAV DB</h2>
-        {[
-          {
-            placeholder: 'JAV Code, e.g. "KAWD-941"; "Movie Number" in www.dmm.co.jp',
-            key: 'code',
-          },
-          {
-            placeholder: 'JAV Name, e.g. "Temptation Pantyhose Slut OL Satomi Yuria"',
-            key: 'name',
-          },
-        ].map(item => (
-          <Input
-            key={item.key}
-            prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-            placeholder={item.placeholder}
-            value={this.state[item.key]}
-            onChange={event => this.handleUpdate(item.key, event.target.value)}
-            onPressEnter={() => this.handleSave()}
-          />
-        ))}
-        <Button onClick={() => this.handleSave()}>Save</Button>
+        <CreateForm onSubmit={this.handleSubmit} />
         <Table rowKey="_id" dataSource={this.state.dataSource} columns={columns} />
       </div>
     );

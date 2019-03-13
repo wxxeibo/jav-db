@@ -22,14 +22,27 @@ export const load = () => db.find().execAsync();
 /**
  * @param {Promise}
  */
-export const save = (javCode, javName) =>
+export const create = ({ javCode, javName }) =>
   db
     .insertAsync({ javCode, javName })
     .then(() => {
-      message.success('Success saving data.');
+      message.success('Success creating data.');
     })
     .catch((error) => {
-      message.error(`Failed in save data, error: ${error.message}`);
+      message.error(`Failed in create data, error: ${error.message}`);
+    });
+
+/**
+ * @param {Promise}
+ */
+export const updateById = (id, { javCode, javName }) =>
+  db
+    .updateAsync({ _id: id }, { $set: { javCode, javName } }, {})
+    .then(() => {
+      message.success('Success updating data.');
+    })
+    .catch((error) => {
+      message.error(`Failed in updating data, error: ${error.message}`);
     });
 
 /**

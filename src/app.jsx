@@ -3,7 +3,8 @@ import { Table, Popconfirm, Button } from 'antd';
 // import 'antd/dist/antd.css';
 
 import CreateForm from './CreateForm';
-import { load, save, remove } from './actions';
+import EditDialog from './EditDialog';
+import { load, create, updateById, remove } from './actions';
 
 export default class App extends Component {
   constructor(props) {
@@ -12,6 +13,9 @@ export default class App extends Component {
       code: '',
       name: '',
       dataSource: [],
+      // Edit dialog
+      visible: false,
+      record: null,
     };
     this.columns = [
       {
@@ -33,17 +37,25 @@ export default class App extends Component {
         title: 'Actions',
         dataIndex: '_id',
         key: 'actions',
-        render: id => (
-          <Popconfirm
-            title="Are you sure delete this task?"
-            onConfirm={() => remove(id).then(this.reloadTable)}
-            onCancel={() => {}}
-            okText="Yes"
-            cancelText="No"
-          >
-            <Button>Delete</Button>
-          </Popconfirm>
-        ),
+        // width: 200,
+        render: (id, record) => {
+          const updateRecord = values => updateById(id, values).then(this.reloadTable);
+          return [
+            <EditDialog key="edit-btn" values={record} updateRecord={updateRecord}>
+              <Button>Edit</Button>
+            </EditDialog>,
+            <Popconfirm
+              key="delete-btn"
+              title="Are you sure delete this task?"
+              onConfirm={() => remove(id).then(this.reloadTable)}
+              onCancel={() => {}}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button>Delete</Button>
+            </Popconfirm>,
+          ];
+        },
       },
     ];
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -53,7 +65,7 @@ export default class App extends Component {
     this.reloadTable();
   }
   handleSubmit(values) {
-    save(values.javCode, values.javName).then(this.reloadTable);
+    create(values).then(this.reloadTable);
   }
   reloadTable() {
     load().then((res) => {

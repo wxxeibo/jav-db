@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Form, Icon, Input, Button } from 'antd';
 
+import { formValuesShape } from './typeDef';
+
 function hasErrors(fieldsError) {
   return Object.keys(fieldsError).some(field => fieldsError[field]);
 }
@@ -77,4 +79,27 @@ class CreateForm extends Component {
 
 CreateForm.propTypes = propTypes;
 
-export default Form.create({ name: 'horizontal_login' })(CreateForm);
+const WrappedForm = Form.create({
+  name: 'jav-form',
+  mapPropsToFields({ values }) {
+    return {
+      javCode: Form.createFormField({
+        value: values.javCode,
+      }),
+      javName: Form.createFormField({
+        value: values.javName,
+      }),
+    };
+  },
+})(CreateForm);
+WrappedForm.propTypes = {
+  values: formValuesShape.isRequired,
+};
+WrappedForm.defaultProps = {
+  values: {
+    javCode: '',
+    javName: '',
+  },
+};
+
+export default WrappedForm;

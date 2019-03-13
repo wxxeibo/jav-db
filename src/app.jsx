@@ -1,37 +1,9 @@
 import React, { Component } from 'react';
-import { Table, message, Popconfirm, Button } from 'antd';
-import Promise from 'bluebird';
-import Nedb from 'nedb';
+import { Table, Popconfirm, Button } from 'antd';
 // import 'antd/dist/antd.css';
-import electron from 'electron';
 
 import CreateForm from './CreateForm';
-
-const app = electron.remote.app;
-const userData = app.getAppPath('userData');
-
-const db = new Nedb({
-  filename: `${userData}/datafile`,
-  autoload: true,
-});
-const Cursor = db.find().constructor;
-Promise.promisifyAll(Nedb.prototype);
-Promise.promisifyAll(Cursor.prototype);
-
-function remove(id) {
-  db.remove({ _id: id }, {}, (error, numRemoved) => {
-    if (error) {
-      message.error('Failed to remove!');
-      return;
-    }
-    // db.persistence.compactDatafile();
-    if (numRemoved === 0) {
-      message.warn('Nothing to be removed!');
-      return;
-    }
-    message.success(`Success to remove, removed count: ${numRemoved}`);
-  });
-}
+import { load, save, remove } from './actions';
 
 export default class App extends Component {
   constructor(props) {
@@ -48,9 +20,14 @@ export default class App extends Component {
         key: '_id',
       },
       {
+        title: 'Code',
+        dataIndex: 'javCode',
+        key: 'javCode',
+      },
+      {
         title: 'Name',
-        dataIndex: 'name',
-        key: 'name',
+        dataIndex: 'javName',
+        key: 'javName',
       },
       {
         title: 'Actions',
@@ -59,7 +36,7 @@ export default class App extends Component {
         render: id => (
           <Popconfirm
             title="Are you sure delete this task?"
-            onConfirm={() => remove(id)}
+            onConfirm={() => remove(id).then(this.reloadTable)}
             onCancel={() => {}}
             okText="Yes"
             cancelText="No"
@@ -70,31 +47,22 @@ export default class App extends Component {
       },
     ];
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.reloadTable = this.reloadTable.bind(this);
   }
   componentDidMount() {
-    db.find()
-      .execAsync()
-      .then((res) => {
-        // res = [{
-        //   'foo';
-        //   'B8QKsq3euaZg5mEn';
-        // }]
-        this.setState({ dataSource: res });
-      });
+    this.reloadTable();
   }
   handleSubmit(values) {
-    this.save(values.javCode, values.javName);
+    save(values.javCode, values.javName).then(this.reloadTable);
   }
-  save(code, name) {
-    db.insertAsync({ code, name })
-      .then(() => db.find().execAsync())
-      .then((res) => {
-        message.success('Success saving data.');
-        this.setState({ dataSource: res });
-      })
-      .catch((error) => {
-        message.error(`Failed in save data, error: ${error.message}`);
-      });
+  reloadTable() {
+    load().then((res) => {
+      // res = [{
+      //   'foo';
+      //   'B8QKsq3euaZg5mEn';
+      // }]
+      this.setState({ dataSource: res });
+    });
   }
   render() {
     return (

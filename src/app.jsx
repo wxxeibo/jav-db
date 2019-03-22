@@ -18,15 +18,16 @@ export default class App extends Component {
       record: null,
     };
     this.columns = [
-      {
-        title: 'ID',
-        dataIndex: '_id',
-        key: '_id',
-      },
+      // {
+      //   title: 'ID',
+      //   dataIndex: '_id',
+      //   key: '_id',
+      // },
       {
         title: 'Code',
         dataIndex: 'javCode',
         key: 'javCode',
+        width: 150,
       },
       {
         title: 'Name',
@@ -37,13 +38,14 @@ export default class App extends Component {
         title: 'Actions',
         dataIndex: '_id',
         key: 'actions',
-        // width: 200,
+        width: 200,
         render: (id, record) => {
           const updateRecord = values => updateById(id, values).then(this.reloadTable);
           return [
             <EditDialog key="edit-btn" values={record} updateRecord={updateRecord}>
               <Button>Edit</Button>
             </EditDialog>,
+            ' ',
             <Popconfirm
               key="delete-btn"
               title="Are you sure delete this task?"

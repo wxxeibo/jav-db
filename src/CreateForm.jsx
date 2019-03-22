@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Form, Icon, Input, Button } from 'antd';
 
 import { formValuesShape } from './typeDef';
+import CheckableTags from './CheckableTags';
 
 function hasErrors(fieldsError) {
   return Object.keys(fieldsError).some(field => fieldsError[field]);
@@ -45,10 +46,12 @@ class CreateForm extends Component {
     // Only show error after a field is touched.
     const javCodeError = isFieldTouched('javCode') && getFieldError('javCode');
     const javNameError = isFieldTouched('javName') && getFieldError('javName');
+    const tagsError = isFieldTouched('tags') && getFieldError('tags');
     return (
       <Form onSubmit={this.handleSubmit}>
         <Form.Item validateStatus={javCodeError ? 'error' : ''} help={javCodeError || ''}>
           {getFieldDecorator('javCode', {
+            initialValue: '',
             rules: [{ required: true, message: 'Please input JAV Code!' }],
           })(
             <Input
@@ -59,6 +62,7 @@ class CreateForm extends Component {
         </Form.Item>
         <Form.Item validateStatus={javNameError ? 'error' : ''} help={javNameError || ''}>
           {getFieldDecorator('javName', {
+            initialValue: '',
             rules: [{ required: true, message: 'Please input JAV Name!' }],
           })(
             <Input
@@ -66,6 +70,9 @@ class CreateForm extends Component {
               placeholder={'JAV Name, e.g. "Temptation Pantyhose Slut OL Satomi Yuria"'}
             />,
           )}
+        </Form.Item>
+        <Form.Item validateStatus={tagsError ? 'error' : ''} help={tagsError || ''}>
+          {getFieldDecorator('tags', { initialValue: ['family'] })(<CheckableTags />)}
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit" disabled={hasErrors(getFieldsError())}>
@@ -89,6 +96,9 @@ const WrappedForm = Form.create({
       javName: Form.createFormField({
         value: values.javName,
       }),
+      tags: Form.createFormField({
+        value: values.tags,
+      }),
     };
   },
 })(CreateForm);
@@ -97,8 +107,13 @@ WrappedForm.propTypes = {
 };
 WrappedForm.defaultProps = {
   values: {
-    javCode: '',
-    javName: '',
+    /**
+     * Use `initialValue` to set the default value to each field in the form
+     * when calling `getFieldDecorator()`
+     */
+    // javCode: '',
+    // javName: '',
+    // tags: [],
   },
 };
 

@@ -20,11 +20,15 @@ Promise.promisifyAll(Cursor.prototype);
 export const load = () => db.find().execAsync();
 
 /**
- * @param {Promise}
+ * @param {Object} values
+ * @param {string} values.javCode
+ * @param {string} values.javName
+ * @param {string[]} values.tags
+ * @return {Promise}
  */
-export const create = ({ javCode, javName }) =>
+export const create = values =>
   db
-    .insertAsync({ javCode, javName })
+    .insertAsync(values)
     .then(() => {
       message.success('Success creating data.');
     })
@@ -33,11 +37,16 @@ export const create = ({ javCode, javName }) =>
     });
 
 /**
- * @param {Promise}
+ * @param {string} id
+ * @param {Object} values
+ * @param {string} values.javCode
+ * @param {string} values.javName
+ * @param {string[]} values.tags
+ * @return {Promise}
  */
-export const updateById = (id, { javCode, javName }) =>
+export const updateById = (id, values) =>
   db
-    .updateAsync({ _id: id }, { $set: { javCode, javName } }, {})
+    .updateAsync({ _id: id }, { $set: values }, {})
     .then(() => {
       message.success('Success updating data.');
     })
@@ -46,7 +55,8 @@ export const updateById = (id, { javCode, javName }) =>
     });
 
 /**
- * @param {Promise}
+ * @param {string} id
+ * @return {Promise}
  */
 export const remove = id =>
   db

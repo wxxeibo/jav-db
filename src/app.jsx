@@ -35,6 +35,13 @@ export default class App extends Component {
         key: 'javName',
       },
       {
+        title: 'Tags',
+        dataIndex: 'tags',
+        key: 'tags',
+        width: 100,
+        render: tags => tags.join(', '),
+      },
+      {
         title: 'Actions',
         dataIndex: '_id',
         key: 'actions',

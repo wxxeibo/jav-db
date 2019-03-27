@@ -49,7 +49,11 @@ class CreateForm extends Component {
     const tagsError = isFieldTouched('tags') && getFieldError('tags');
     return (
       <Form onSubmit={this.handleSubmit}>
-        <Form.Item validateStatus={javCodeError ? 'error' : ''} help={javCodeError || ''}>
+        <Form.Item
+          label="JAV Code"
+          validateStatus={javCodeError ? 'error' : ''}
+          help={javCodeError || ''}
+        >
           {getFieldDecorator('javCode', {
             initialValue: '',
             rules: [{ required: true, message: 'Please input JAV Code!' }],
@@ -60,7 +64,11 @@ class CreateForm extends Component {
             />,
           )}
         </Form.Item>
-        <Form.Item validateStatus={javNameError ? 'error' : ''} help={javNameError || ''}>
+        <Form.Item
+          label="JAV Name"
+          validateStatus={javNameError ? 'error' : ''}
+          help={javNameError || ''}
+        >
           {getFieldDecorator('javName', {
             initialValue: '',
             rules: [{ required: true, message: 'Please input JAV Name!' }],
@@ -71,7 +79,11 @@ class CreateForm extends Component {
             />,
           )}
         </Form.Item>
-        <Form.Item validateStatus={tagsError ? 'error' : ''} help={tagsError || ''}>
+        <Form.Item
+          label="JAV Tags"
+          validateStatus={tagsError ? 'error' : ''}
+          help={tagsError || ''}
+        >
           {getFieldDecorator('tags', { initialValue: ['family'] })(<CheckableTags />)}
         </Form.Item>
         <Form.Item>

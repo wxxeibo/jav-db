@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Modal } from 'antd';
 
 import { formValuesShape } from './typeDef';
-import CreateForm from './CreateForm';
+import JavForm from './JavForm';
 
 const propTypes = {
   children: React.PropTypes.node.isRequired,
@@ -44,7 +44,7 @@ export default class EditDialog extends Component {
           visible={this.state.visible}
           onCancel={this.handleHideDialog}
         >
-          <CreateForm values={this.props.values} onSubmit={this.handleSubmit} />
+          <JavForm values={this.props.values} onSubmit={this.handleSubmit} />
         </Modal>
       </div>
     );

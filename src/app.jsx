@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Table, Popconfirm, Button } from 'antd';
 // import 'antd/dist/antd.css';
 
-import CreateForm from './CreateForm';
+import JavForm from './JavForm';
 import EditDialog from './EditDialog';
 import { load, create, updateById, remove } from './actions';
 
@@ -87,9 +87,9 @@ export default class App extends Component {
   }
   render() {
     return (
-      <div>
+      <div className="app" style={{ margin: '10px' }}>
         <h2>JAV DB</h2>
-        <CreateForm onSubmit={this.handleSubmit} />
+        <JavForm onSubmit={this.handleSubmit} />
         <Table rowKey="_id" dataSource={this.state.dataSource} columns={this.columns} />
       </div>
     );

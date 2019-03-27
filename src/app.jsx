@@ -46,7 +46,7 @@ export default class App extends Component {
         title: 'Actions',
         dataIndex: '_id',
         key: 'actions',
-        width: 200,
+        width: 300,
         render: (id, record) => {
           const updateRecord = values => updateById(id, values).then(this.reloadTable);
           return [
@@ -64,7 +64,7 @@ export default class App extends Component {
               okText="Yes"
               cancelText="No"
             >
-              <Button>Delete</Button>
+              <Button type="danger">Delete</Button>
             </Popconfirm>,
           ];
         },

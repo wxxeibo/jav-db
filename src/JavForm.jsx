@@ -4,6 +4,7 @@ import { Form, Icon, Input, Button } from 'antd';
 
 import { formValuesShape } from './typeDef';
 import CheckableTags from './CheckableTags';
+import DynamicFieldSet from './DynamicFieldSet';
 
 function hasErrors(fieldsError) {
   return Object.keys(fieldsError).some(field => fieldsError[field]);
@@ -85,6 +86,13 @@ class CreateForm extends Component {
           help={tagsError || ''}
         >
           {getFieldDecorator('tags', { initialValue: ['family'] })(<CheckableTags />)}
+        </Form.Item>
+        <Form.Item
+          label="JAV Tags"
+          validateStatus={tagsError ? 'error' : ''}
+          help={tagsError || ''}
+        >
+          {getFieldDecorator('links', { initialValue: [] })(<DynamicFieldSet />)}
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit" disabled={hasErrors(getFieldsError())}>

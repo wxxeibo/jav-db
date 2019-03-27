@@ -4,6 +4,7 @@ import { Table, Popconfirm, Button } from 'antd';
 
 import JavForm from './JavForm';
 import EditDialog from './EditDialog';
+import ViewDetailButton from './ViewDetailButton';
 import { load, create, updateById, remove } from './actions';
 
 export default class App extends Component {
@@ -49,6 +50,8 @@ export default class App extends Component {
         render: (id, record) => {
           const updateRecord = values => updateById(id, values).then(this.reloadTable);
           return [
+            <ViewDetailButton key="view-detail-btn" values={record} />,
+            ' ',
             <EditDialog key="edit-btn" values={record} updateRecord={updateRecord}>
               <Button>Edit</Button>
             </EditDialog>,

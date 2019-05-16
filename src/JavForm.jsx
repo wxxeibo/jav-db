@@ -18,6 +18,7 @@ const propTypes = {
     getFieldError: PropTypes.func.isRequired,
     isFieldTouched: PropTypes.func.isRequired,
   }).isRequired,
+  initialValues: formValuesShape.isRequired,
   onSubmit: PropTypes.func.isRequired,
 };
 
@@ -43,6 +44,7 @@ class CreateForm extends Component {
 
   render() {
     const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
+    const { initialValues } = this.props;
 
     // Only show error after a field is touched.
     const javCodeError = isFieldTouched('javCode') && getFieldError('javCode');
@@ -56,7 +58,7 @@ class CreateForm extends Component {
           help={javCodeError || ''}
         >
           {getFieldDecorator('javCode', {
-            initialValue: '',
+            initialValue: initialValues.javCode,
             rules: [{ required: true, message: 'Please input JAV Code!' }],
           })(
             <Input
@@ -71,7 +73,7 @@ class CreateForm extends Component {
           help={javNameError || ''}
         >
           {getFieldDecorator('javName', {
-            initialValue: '',
+            initialValue: initialValues.javName,
             rules: [{ required: true, message: 'Please input JAV Name!' }],
           })(
             <Input
@@ -85,14 +87,14 @@ class CreateForm extends Component {
           validateStatus={tagsError ? 'error' : ''}
           help={tagsError || ''}
         >
-          {getFieldDecorator('tags', { initialValue: ['family'] })(<CheckableTags />)}
+          {getFieldDecorator('tags', { initialValue: initialValues.tags })(<CheckableTags />)}
         </Form.Item>
         <Form.Item
           label="JAV Tags"
           validateStatus={tagsError ? 'error' : ''}
           help={tagsError || ''}
         >
-          {getFieldDecorator('links', { initialValue: [] })(<DynamicFieldSet />)}
+          {getFieldDecorator('links', { initialValue: initialValues.links })(<DynamicFieldSet />)}
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit" disabled={hasErrors(getFieldsError())}>
@@ -108,32 +110,33 @@ CreateForm.propTypes = propTypes;
 
 const WrappedForm = Form.create({
   name: 'jav-form',
-  mapPropsToFields({ values }) {
-    return {
-      javCode: Form.createFormField({
-        value: values.javCode,
-      }),
-      javName: Form.createFormField({
-        value: values.javName,
-      }),
-      tags: Form.createFormField({
-        value: values.tags,
-      }),
-    };
-  },
+  // mapPropsToFields({ initialValues }) {
+  //   return {
+  //     javCode: Form.createFormField({
+  //       value: initialValues.javCode,
+  //     }),
+  //     javName: Form.createFormField({
+  //       value: initialValues.javName,
+  //     }),
+  //     tags: Form.createFormField({
+  //       value: initialValues.tags,
+  //     }),
+  //   };
+  // },
 })(CreateForm);
 WrappedForm.propTypes = {
-  values: formValuesShape.isRequired,
+  initialValues: formValuesShape.isRequired,
 };
 WrappedForm.defaultProps = {
-  values: {
+  initialValues: {
     /**
      * Use `initialValue` to set the default value to each field in the form
      * when calling `getFieldDecorator()`
      */
-    // javCode: '',
-    // javName: '',
-    // tags: [],
+    javCode: '',
+    javName: '',
+    tags: ['family'],
+    links: [],
   },
 };
 

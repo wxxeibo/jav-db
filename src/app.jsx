@@ -52,7 +52,7 @@ export default class App extends Component {
           return [
             <ViewDetailButton key="view-detail-btn" values={record} />,
             ' ',
-            <EditDialog key="edit-btn" values={record} updateRecord={updateRecord}>
+            <EditDialog key="edit-btn" initialValues={record} updateRecord={updateRecord}>
               <Button>Edit</Button>
             </EditDialog>,
             ' ',

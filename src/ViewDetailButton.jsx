@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import { Modal, Button, Row, Col } from 'antd';
 
 import { formValuesShape } from './typeDef';
 
 const propTypes = {
   values: formValuesShape.isRequired,
-  updateRecord: PropTypes.func.isRequired,
 };
 
-export default class EditDialog extends Component {
+export default class ViewDetailButton extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -17,18 +16,12 @@ export default class EditDialog extends Component {
     };
     this.handleShowDialog = this.handleShowDialog.bind(this);
     this.handleHideDialog = this.handleHideDialog.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
   handleShowDialog() {
     this.setState({ visible: true });
   }
   handleHideDialog() {
     this.setState({ visible: false });
-  }
-  handleSubmit(values) {
-    this.props.updateRecord(values).then(() => {
-      this.handleHideDialog();
-    });
   }
   render() {
     const { values } = this.props;
@@ -57,4 +50,4 @@ export default class EditDialog extends Component {
   }
 }
 
-EditDialog.propTypes = propTypes;
+ViewDetailButton.propTypes = propTypes;

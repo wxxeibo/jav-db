@@ -7,14 +7,29 @@ const CheckableTag = Tag.CheckableTag;
 const tags = ['family', 'glasses', 'stockings', 'pantyhose'];
 
 const propTypes = {
-  value: PropTypes.arrayOf(PropTypes.string),
+  /**
+   * Fixed the antd warning, but also need to ignore the eslint warning
+   */
+  value: PropTypes.arrayOf(PropTypes.string), // eslint-disable-line react/require-default-props
   onChange: PropTypes.func,
 };
 const defaultProps = {
-  value: [],
+  /**
+   * Fix warning from antd:
+   * ```
+   * Warning: `getFieldDecorator` will override `value`,
+   * so please don't set `value` directly and use `setFieldsValue` to set it.
+   * ```
+   * Instead of setting default value here, please set the default value in
+   * the `initialValue` of parent AntDesign form component
+   */
+  // value: [],
   onChange: () => {},
 };
 
+/**
+ * A AntDesign compatible component
+ */
 export default class CheckableTags extends React.Component {
   constructor(props) {
     super(props);

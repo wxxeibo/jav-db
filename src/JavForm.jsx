@@ -5,6 +5,7 @@ import { Form, Icon, Input, Button } from 'antd';
 import { formValuesShape } from './typeDef';
 import CheckableTags from './CheckableTags';
 import DynamicFieldSet from './DynamicFieldSet';
+import Posters from './Posters';
 
 function hasErrors(fieldsError) {
   return Object.keys(fieldsError).some(field => fieldsError[field]);
@@ -50,6 +51,8 @@ class CreateForm extends Component {
     const javCodeError = isFieldTouched('javCode') && getFieldError('javCode');
     const javNameError = isFieldTouched('javName') && getFieldError('javName');
     const tagsError = isFieldTouched('tags') && getFieldError('tags');
+    const linksError = isFieldTouched('links') && getFieldError('links');
+    const postersError = isFieldTouched('posters') && getFieldError('posters');
     return (
       <Form onSubmit={this.handleSubmit}>
         <Form.Item
@@ -90,11 +93,18 @@ class CreateForm extends Component {
           {getFieldDecorator('tags', { initialValue: initialValues.tags })(<CheckableTags />)}
         </Form.Item>
         <Form.Item
-          label="JAV Tags"
-          validateStatus={tagsError ? 'error' : ''}
-          help={tagsError || ''}
+          label="JAV Links"
+          validateStatus={linksError ? 'error' : ''}
+          help={linksError || ''}
         >
           {getFieldDecorator('links', { initialValue: initialValues.links })(<DynamicFieldSet />)}
+        </Form.Item>
+        <Form.Item
+          label="JAV Posters"
+          validateStatus={postersError ? 'error' : ''}
+          help={postersError || ''}
+        >
+          {getFieldDecorator('posters', { initialValue: initialValues.posters })(<Posters />)}
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit" disabled={hasErrors(getFieldsError())}>
@@ -137,6 +147,7 @@ WrappedForm.defaultProps = {
     javName: '',
     tags: ['family'],
     links: [],
+    posters: [],
   },
 };
 

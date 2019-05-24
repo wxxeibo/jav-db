@@ -32,7 +32,7 @@ export default class DynamicFieldSet extends React.Component {
       },
     };
     const formItems = this.state.keys.map((link, index) => (
-      <div>
+      <div key={link}>
         <Input
           placeholder="passenger name"
           style={{ width: '60%', marginRight: 8 }}

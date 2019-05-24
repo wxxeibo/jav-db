@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { Table, Popconfirm, Button } from 'antd';
+import { Table } from 'antd';
 // import 'antd/dist/antd.css';
 
 import JavForm from './JavForm';
-import EditDialog from './EditDialog';
-import ViewDetailButton from './ViewDetailButton';
-import { load, create, updateById, remove } from './actions';
+import { load, create } from './actions';
+import columns from './columns';
 
 export default class App extends Component {
   constructor(props) {
@@ -18,58 +17,6 @@ export default class App extends Component {
       visible: false,
       record: null,
     };
-    this.columns = [
-      // {
-      //   title: 'ID',
-      //   dataIndex: '_id',
-      //   key: '_id',
-      // },
-      {
-        title: 'Code',
-        dataIndex: 'javCode',
-        key: 'javCode',
-        width: 150,
-      },
-      {
-        title: 'Name',
-        dataIndex: 'javName',
-        key: 'javName',
-      },
-      {
-        title: 'Tags',
-        dataIndex: 'tags',
-        key: 'tags',
-        width: 100,
-        render: tags => tags.join(', '),
-      },
-      {
-        title: 'Actions',
-        dataIndex: '_id',
-        key: 'actions',
-        width: 300,
-        render: (id, record) => {
-          const updateRecord = values => updateById(id, values).then(this.reloadTable);
-          return [
-            <ViewDetailButton key="view-detail-btn" values={record} />,
-            ' ',
-            <EditDialog key="edit-btn" initialValues={record} updateRecord={updateRecord}>
-              <Button>Edit</Button>
-            </EditDialog>,
-            ' ',
-            <Popconfirm
-              key="delete-btn"
-              title="Are you sure delete this task?"
-              onConfirm={() => remove(id).then(this.reloadTable)}
-              onCancel={() => {}}
-              okText="Yes"
-              cancelText="No"
-            >
-              <Button type="danger">Delete</Button>
-            </Popconfirm>,
-          ];
-        },
-      },
-    ];
     this.handleSubmit = this.handleSubmit.bind(this);
     this.reloadTable = this.reloadTable.bind(this);
   }
@@ -93,7 +40,7 @@ export default class App extends Component {
       <div className="app" style={{ margin: '10px' }}>
         <h2>JAV DB</h2>
         <JavForm onSubmit={this.handleSubmit} />
-        <Table rowKey="_id" dataSource={this.state.dataSource} columns={this.columns} />
+        <Table rowKey="_id" dataSource={this.state.dataSource} columns={columns} />
       </div>
     );
   }
